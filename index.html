@@ -6,9 +6,8 @@
 <meta name="robots" content="noindex, nofollow">
 <title>Sprechraum – Stimm- & Präsentationstraining (Demo-Entwurf)</title>
 <meta name="description" content="Demo-Entwurf eines Onepagers mit Kursverkauf: Online-Kurse und Einzeltraining für Stimme und Auftreten.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Anybody:wdth,wght@50..150,300..900&family=IBM+Plex+Mono:wght@400;500&family=Onest:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="preload" href="fonts/Anybody-300-900-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="fonts/fonts.css">
 <style>
   :root {
     --plum: #1E1530;
@@ -252,7 +251,7 @@
 </head>
 <body>
 
-<div class="demo-strip mono" role="note"><b>Demo-Entwurf</b> · Alle Inhalte sind Beispiele und werden durch Ihre ersetzt</div>
+<div class="demo-strip mono" role="note"><b>Demo-Entwurf</b> · Alle Inhalte sind Beispiele und werden durch Ihre ersetzt · Ohne Google-Server &amp; Tracking</div>
 
 <header class="site-header" id="top">
   <div class="wrap">
@@ -270,7 +269,7 @@
 <main>
   <section class="hero">
     <div class="wrap">
-      <div class="eyebrow mono"><span class="onair">ON AIR</span> Stimm- &amp; Präsentationstraining · Fürth &amp; online</div>
+      <div class="eyebrow mono"><span class="onair">ON AIR</span> Stimm- &amp; Präsentationstraining · <span data-ort>Fürth</span> &amp; online</div>
       <h1 class="headline" id="headline" aria-label="Sprich so, dass man dir zuhört.">
         <span class="w">Sprich</span> <span class="w">so,</span> <span class="w">dass</span> <span class="w">man</span> <span class="w">dir</span> <span class="w accent-target">zuhört.</span>
       </h1>
@@ -366,7 +365,7 @@
         <span>Rechnung für Firmen</span>
       </div>
       <div class="one-on-one reveal" id="kontakt">
-        <p>Lieber persönlich? Einzeltraining in Fürth oder per Video, ab 90 € pro Stunde.</p>
+        <p>Lieber persönlich? Einzeltraining in <span data-ort>Fürth</span> oder per Video, ab 90 € pro Stunde.</p>
         <a class="btn btn-ghost" href="mailto:hallo@example.de?subject=Kennenlerngespr%C3%A4ch">Kennenlernen anfragen</a>
       </div>
     </div>
@@ -446,6 +445,10 @@
 <script>
 (() => {
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // ?ort=Frankfurt personalisiert die Ortsangaben
+  const ort = new URLSearchParams(location.search).get('ort');
+  if (ort && /^[\p{L} .\-]{2,40}$/u.test(ort)) document.querySelectorAll('[data-ort]').forEach(el => { el.textContent = ort; });
 
   // Header border on scroll
   const header = document.querySelector('.site-header');
