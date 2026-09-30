@@ -1,0 +1,350 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Digital employee for your shared inbox – interactive example | Lyvor</title>
+<meta name="description" content="Monday, 7:30 AM, 23 new emails. See how a digital employee sorts a property management inbox and prepares replies for your team to approve.">
+<link rel="stylesheet" href="../fonts/fonts.css">
+<style>
+  :root {
+    --ink:#05060b; --ink2:#0a0c14; --txt:#f1f3f9; --dim:#a6acbe; --lab:#9298ab; --line:rgba(226,234,255,.12);
+    --blue:#5fa8ff; --cyan:#9fe0ff; --done:#3bd694; --warn:#ff6b7a;
+    --paper:#f7f8fc; --paper2:#eceff6; --pline:#dfe3ee; --ptxt:#161a26; --pdim:#586077;
+    --sans:'Onest',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+    --disp:'Anybody','Onest',system-ui,sans-serif;
+    --mono:'IBM Plex Mono',ui-monospace,Menlo,monospace;
+  }
+  * { box-sizing:border-box; }
+  html { background:var(--ink); }
+  body { margin:0; background:radial-gradient(1200px 520px at 50% -80px,#101a33 0,var(--ink) 70%) no-repeat, var(--ink); color:var(--txt); font:400 16px/1.55 var(--sans); -webkit-font-smoothing:antialiased; }
+  a { color:var(--cyan); }
+  :focus-visible { outline:2px solid var(--blue); outline-offset:2px; border-radius:4px; }
+  .wrap { max-width:1040px; margin:0 auto; padding:0 16px; }
+  .strip { font:500 .74rem/1.4 var(--mono); letter-spacing:.06em; text-transform:uppercase; color:var(--lab); padding:12px 0; border-bottom:1px solid var(--line); }
+  .strip .wrap { display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; }
+  .brand { color:var(--txt); letter-spacing:.42em; font-weight:500; }
+
+  header.hero { text-align:center; padding:56px 0 30px; }
+  .kicker { font:500 .76rem/1.4 var(--mono); letter-spacing:.1em; text-transform:uppercase; color:var(--lab); margin:0 0 14px; }
+  h1 { font:800 clamp(2.3rem,7vw,4.2rem)/1.02 var(--disp); margin:0 0 14px; letter-spacing:-.01em; }
+  h1 .dim { color:#8a91a8; display:block; font-weight:600; }
+  .sub { color:var(--dim); font-size:1.08rem; max-width:34rem; margin:0 auto 26px; }
+  .go { font:500 1rem var(--sans); background:#eaf4ff; color:#05101f; border:0; border-radius:999px; padding:14px 26px; cursor:pointer; box-shadow:0 10px 40px rgba(95,168,255,.25); }
+  .go:hover { background:#fff; }
+  .go[disabled] { opacity:.55; cursor:default; }
+
+  .tally { min-height:40px; margin:22px auto 0; display:flex; flex-wrap:wrap; justify-content:center; align-content:flex-start; gap:8px 10px; }
+  .tally span { font:500 .8rem/1 var(--mono); padding:9px 12px; border:1px solid var(--line); border-radius:999px; color:var(--dim); opacity:0; transform:translateY(6px); transition:opacity .4s, transform .4s; }
+  .tally.on span { opacity:1; transform:none; }
+  .tally b { color:var(--txt); font-weight:500; }
+  .tally .t-urg b { color:var(--warn); }
+  .tally .t-ok b { color:var(--done); }
+
+  .window { background:var(--paper); color:var(--ptxt); border-radius:14px; overflow:hidden; box-shadow:0 30px 90px rgba(0,0,0,.55), 0 0 0 1px rgba(255,255,255,.06); margin:26px 0 0; }
+  .bar { display:flex; align-items:center; gap:8px; padding:12px 16px; background:linear-gradient(#f0f2f8,#e8ebf3); border-bottom:1px solid var(--pline); font:500 .86rem var(--sans); color:var(--pdim); }
+  .bar i { width:11px; height:11px; border-radius:50%; background:#cdd2df; display:inline-block; }
+  .bar .unread { color:#1d5fd1; font-weight:500; }
+  .bar .sp { flex:1; }
+  .bar .who { font:400 .78rem var(--mono); color:#7a8299; }
+  .cols { display:grid; grid-template-columns:minmax(300px,36%) 1fr; height:600px; }
+  .list { overflow:auto; border-right:1px solid var(--pline); background:var(--paper); }
+  .row { display:block; width:100%; text-align:left; border:0; border-bottom:1px solid var(--pline); background:transparent; padding:13px 32px 12px 30px; cursor:pointer; position:relative; font:inherit; color:inherit; }
+  .row:hover { background:#eef1f8; }
+  .row.sel { background:#e6ecfa; }
+  .row .dot { position:absolute; left:13px; top:20px; width:8px; height:8px; border-radius:50%; background:#1d5fd1; }
+  .row.read .dot { background:transparent; }
+  .row .top { display:flex; justify-content:space-between; gap:8px; font-weight:500; font-size:.92rem; }
+  .row .top span:last-child { font:400 .74rem var(--mono); color:#7a8299; white-space:nowrap; }
+  .row .subj { font-weight:500; font-size:.9rem; margin-top:1px; }
+  .row .prev { font-size:.84rem; color:var(--pdim); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-top:1px; }
+  .badge { display:inline-block; margin-top:7px; font:500 .7rem/1 var(--mono); padding:5px 8px; border-radius:999px; opacity:0; transform:scale(.92); transition:opacity .3s, transform .3s; }
+  .row.tagged .badge { opacity:1; transform:none; }
+  .b-draft { background:#e3edff; color:#1847a8; }
+  .b-urgent { background:#ffe3e6; color:#a6192e; }
+  .b-review { background:#fff1d6; color:#8a5a00; }
+  .b-quiet { background:#e6eaf1; color:#596175; }
+    .row.open-able::after { content:"›"; position:absolute; right:14px; top:44%; color:#9aa2b8; font-size:1.3rem; }
+
+  .detail { overflow:auto; padding:26px 28px 30px; }
+  .empty { height:100%; display:grid; place-content:center; text-align:center; color:var(--pdim); gap:6px; padding:20px; }
+  .empty strong { color:var(--ptxt); font-weight:500; }
+  .back { display:none; border:0; background:none; color:#1d5fd1; font:500 .92rem var(--sans); padding:0 0 12px; cursor:pointer; }
+  .pane-h { font:500 .7rem/1 var(--mono); letter-spacing:.09em; text-transform:uppercase; color:#7a8299; margin:0 0 10px; }
+  .orig { background:#fff; border:1px solid var(--pline); border-radius:10px; padding:16px 18px; }
+  .orig .from { font-weight:500; }
+  .orig .sj { color:var(--pdim); font-size:.92rem; margin-bottom:8px; }
+  .orig p { margin:0; font-size:.96rem; }
+  .arrow { text-align:center; color:#9aa2b8; margin:12px 0; font:400 .8rem var(--mono); }
+  .res { background:#fff; border:1px solid #c9d8fb; border-left:4px solid #1d5fd1; border-radius:10px; padding:16px 18px; }
+  .res.urgent { border-color:#f6c7cd; border-left-color:#d1334a; }
+  .res.review { border-color:#f3dfb2; border-left-color:#d69a1a; }
+  .res.quiet { border-color:var(--pline); border-left-color:#9aa2b8; }
+  .meta { display:flex; flex-wrap:wrap; gap:6px 14px; font:400 .78rem/1.4 var(--mono); color:#5b6580; margin-bottom:12px; }
+  .meta b { font-weight:500; color:var(--ptxt); }
+  .draft { white-space:pre-line; font-size:.96rem; margin:0; background:#f4f7ff; border:1px dashed #b7c6ee; border-radius:8px; padding:13px 15px; }
+  .draft-l { font:500 .7rem var(--mono); letter-spacing:.08em; text-transform:uppercase; color:#1847a8; margin:14px 0 6px; }
+  .draft-l:first-of-type { margin-top:0; }
+  .note { font-size:.96rem; margin:0; }
+  .chips { display:flex; flex-wrap:wrap; gap:6px; margin-top:14px; }
+  .chips span { font:400 .74rem var(--mono); background:var(--paper2); color:#475069; padding:6px 9px; border-radius:6px; }
+  .human { margin-top:12px; font-size:.86rem; color:var(--pdim); }
+
+  .cta { text-align:center; padding:54px 0 14px; }
+  .cta h2 { font:700 clamp(1.6rem,4.4vw,2.3rem)/1.12 var(--disp); margin:0 0 12px; }
+  .cta p { color:var(--dim); max-width:36rem; margin:0 auto 22px; }
+  .mail { display:inline-block; text-decoration:none; background:#eaf4ff; color:#05101f; font-weight:500; padding:14px 26px; border-radius:999px; }
+  .mail:hover { background:#fff; }
+  .facts { margin:46px 0 0; padding:22px 0 0; border-top:1px solid var(--line); display:grid; grid-template-columns:repeat(3,1fr); gap:22px; }
+  .facts h3 { font:500 .74rem var(--mono); letter-spacing:.09em; text-transform:uppercase; color:var(--lab); margin:0 0 6px; }
+  .facts p { margin:0; font-size:.94rem; color:var(--dim); }
+  footer { padding:34px 0 46px; color:var(--lab); font:400 .8rem/1.6 var(--mono); }
+  footer p { margin:0 0 8px; max-width:52rem; }
+
+  @media (max-width:820px) {
+    .cols { display:block; height:auto; }
+    .list { border-right:0; max-height:none; }
+    .detail { display:none; }
+    .window.show-detail .list { display:none; }
+    .window.show-detail .detail { display:block; padding:18px 16px 24px; }
+    .back { display:block; }
+    .facts { grid-template-columns:1fr; }
+    header.hero { padding-top:38px; }
+    .bar .who { display:none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .badge, .tally span { transition:none; }
+  }
+</style>
+</head>
+<body>
+<div class="strip"><div class="wrap"><span class="brand">LYVOR</span><span>Interactive example · invented names · scripted walkthrough</span></div></div>
+
+<main class="wrap">
+  <header class="hero">
+    <p class="kicker">Example · property management inbox</p>
+    <h1><span class="dim">Monday, 7:30 AM.</span>23 new emails.</h1>
+    <p class="sub">See what a digital employee prepared before your team logged in. It sorts, flags and drafts. Your team reviews and clicks send.</p>
+    <button class="go" id="go" type="button">See what happened before you logged in ▶</button>
+    <div class="tally" id="tally" aria-live="polite"></div>
+  </header>
+
+  <section class="window" id="win" aria-label="Example inbox">
+    <div class="bar"><i></i><i></i><i></i><span style="margin-left:6px">Shared inbox — <span class="unread" id="unread">23</span> unread<span id="sortedWrap" hidden> · <span id="sorted">0</span> sorted</span></span><span class="sp"></span><span class="who">info@example-pm.test</span></div>
+    <div class="cols">
+      <div class="list" id="list" role="list"></div>
+      <div class="detail" id="detail"></div>
+    </div>
+  </section>
+
+  <section class="cta">
+    <h2>Want this for your inbox?</h2>
+    <p>Reply “yes” to my email and I’ll send a one-page written example built around your firm’s public website. No call needed.</p>
+    <a class="mail" href="mailto:alper.k@lyvor.io?subject=Yes%20%E2%80%94%20one-page%20example">Reply by email</a>
+    <div class="facts">
+      <div><h3>Nothing goes out alone</h3><p>Every reply is a draft. Your team edits it and clicks send.</p></div>
+      <div><h3>Inside Microsoft 365</h3><p>It works in the inbox you already use, not in a new portal.</p></div>
+      <div><h3>Promises nothing for you</h3><p>No arrival times, no cost commitments, no safety judgments in a draft. Emergencies go to a person.</p></div>
+    </div>
+  </section>
+</main>
+
+<footer class="wrap">
+  <p>This is a scripted walkthrough with invented people, buildings and emails. It shows how the system sorts and drafts; it is not a live run on real mail. The German-language version has been in live use at a condo association management firm in Stuttgart, Germany, since July 2026.</p>
+  <p>Lyvor · Alper Kücük · Brennerstraße 11, 71229 Leonberg, Germany · alper.k@lyvor.io</p>
+</footer>
+
+<noscript><div class="wrap"><p style="color:#a6acbe">This example needs JavaScript. Reply to my email and I’ll send the same walkthrough as a one-page PDF.</p></div></noscript>
+
+<script>
+(function () {
+  var D = [
+    // id, from, subject, preview, time, badge, detail
+    { f:'Dana Whitfield', s:'Heat not working in 4B', p:'The radiator in our bedroom has been cold since Friday and it is getting chilly at night …', t:'06:12', b:'draft',
+      d:{ o:'Hi, the radiator in our bedroom (unit 4B) has been cold since Friday and it is getting chilly at night. Could someone take a look this week? Thanks, Dana',
+          cat:'Maintenance request', prop:'Maple Court · Unit 4B',
+          drafts:[{l:'Reply draft', x:'Hi Dana,\n\nThank you for letting us know. We’ve logged the heating issue in unit 4B and our maintenance team will arrange for a technician to take a look. We’ll update you as soon as a visit is scheduled.\n\nBest regards,\nMaple Court Management'}],
+          chips:['No visit time promised','No cause assumed','Unit and building filled in'] } },
+    { f:'Marcus Lee', s:'Late fee on my March statement', p:'I paid on the 3rd but was charged a late fee. Can you check this?', t:'06:31', b:'draft',
+      d:{ o:'Hello, I paid my March assessment on the 3rd but my statement shows a late fee. Can you check this? Unit 6A.',
+          cat:'Billing question', prop:'Harbor View · Unit 6A',
+          drafts:[{l:'Reply draft', x:'Hello Marcus,\n\nThank you for your message. We’ve passed your question about the March statement to our accounting team so they can review the payment date against your account. You’ll hear back once they’ve had a look.\n\nBest regards,\nHarbor View Management'},
+                  {l:'Second draft · forward to accounting', x:'Subject: Ledger question – Harbor View #6A – March late fee\n\nHi team, the owner of 6A says the March assessment was paid on the 3rd and questions the late fee shown on the statement. Please review the payment date and reply with what you find.'}],
+          chips:['Reply + forward to accounting','No refund promised','No fee waived or confirmed'] } },
+    { f:'Priya Raman', s:'Water coming through my ceiling!', p:'There is water dripping from the ceiling in my bathroom, it started an hour ago …', t:'06:48', b:'urgent',
+      d:{ o:'There is water dripping from the ceiling in my bathroom (3C). It started about an hour ago and is getting worse. Please call someone.',
+          cat:'Possible water damage', prop:'Maple Court · Unit 3C',
+          flag:'Marked urgent and pushed to the person on call. No draft is written for emergencies: a person should decide what to say and who to send.',
+          chips:['Urgent','No draft on purpose','Unit 3C and unit above 4C noted'] } },
+    { f:'Tom Becker', s:'Signed proxy for Thursday’s election', p:'Attached is my signed proxy for the annual meeting. I can’t attend in person …', t:'06:55', b:'urgent',
+      d:{ o:'Attached is my signed proxy for Thursday’s annual meeting and board election. I can’t attend in person. Please confirm you received it. Tom Becker, Unit 12B',
+          cat:'Annual meeting · proxy', prop:'Harbor View · Unit 12B',
+          flag:'Time-sensitive: proxies have to reach the board secretary before the meeting on Thursday. Routed to the board secretary’s queue with the attachment, and the confirmation draft waits for your approval.',
+          chips:['Deadline flagged','Attachment kept with the message','Confirmation waits for a person'] } },
+    { f:'Brightline Electric', s:'Work completed – Building 118', p:'The lobby lighting work at Building 118 is finished. Photos attached …', t:'07:09', b:'draft',
+      d:{ o:'Hi, the lobby lighting work at Building 118 is finished. Photos attached. Let us know if you need anything else, invoice to follow.',
+          cat:'Vendor update', prop:'Building 118',
+          drafts:[{l:'Reply draft', x:'Hi,\n\nThank you for the update on Building 118 and for the photos. Please send the invoice to our accounts payable inbox and include the work order number so it can be matched.\n\nBest regards,\nProperty Management'}],
+          chips:['Photos filed with the building','No approval of the work implied','Invoice routed to AP'] } },
+    { f:'Jordan Ellis', s:'Loud music every night from 2C', p:'This is the fourth week. I’ve asked them nicely. What are you going to do about it? …', t:'07:14', b:'review',
+      d:{ o:'This is the fourth week of loud music from 2C every night past midnight. I’ve asked them nicely. What are you going to do about it?',
+          cat:'Complaint about another resident', prop:'Maple Court · Unit 2B → 2C',
+          flag:'On your review list, no draft. A complaint about a neighbor can start a violation process, so the wording and next step are a person’s call. The earlier complaints are linked for context.',
+          chips:['Needs a person','Earlier messages linked','No names shared between residents'] } },
+    { f:'Automatic reply', s:'Out of office until Oct 12', p:'Thank you for your email. I am out of the office until October 12 …', t:'07:19', b:'quiet',
+      d:{ o:'Thank you for your email. I am out of the office until October 12 with limited access to email.',
+          cat:'Automatic reply', prop:'—',
+          flag:'Filed quietly. It answers a message the team sent on Friday, so nothing is written back. The contact is noted as away until October 12.',
+          chips:['No reply written','Away date noted'] } },
+    { f:'Ben Carter', s:'Parking permit renewal', p:'My guest permit expires at the end of the month. How do I renew it? …', t:'07:22', b:'draft',
+      d:{ o:'Hi, my guest parking permit expires at the end of the month. How do I renew it, and is there a fee?',
+          cat:'Parking', prop:'Harbor View · Unit 9A',
+          drafts:[{l:'Reply draft', x:'Hi Ben,\n\nThank you for asking. Permit renewals are handled through the management office. We’ve noted your request for unit 9A and will send you the renewal steps and any applicable details shortly.\n\nBest regards,\nHarbor View Management'}],
+          chips:['Fee not quoted','Renewal steps to follow','Unit noted'] } },
+
+    // list-only mails (not opened in this example)
+    { f:'Helen Ortiz', s:'Can I get a copy of the bylaws?', p:'I just bought in 7D and would like a copy of the bylaws and rules …', t:'06:14', b:'draft' },
+    { f:'Sam Patel', s:'Gate code not working', p:'The pedestrian gate code from last month does not work anymore …', t:'06:18', b:'draft' },
+    { f:'Kim Nguyen', s:'Move-out inspection date', p:'We move out on the 30th. When can we schedule the inspection? …', t:'06:24', b:'draft' },
+    { f:'Olivia Grant', s:'Dispute about special assessment', p:'I do not agree with the amount of the special assessment and want it reviewed …', t:'06:29', b:'review' },
+    { f:'Luis Romero', s:'Question about the pet policy', p:'Are two small dogs allowed in the building? I could not find the rule …', t:'06:37', b:'draft' },
+    { f:'Property Tech Digest', s:'This week in proptech', p:'Five tools your competitors are testing this quarter …', t:'06:40', b:'quiet' },
+    { f:'Alicia Stone', s:'Package room is full again', p:'Packages are stacked on the floor again, some have been there for days …', t:'06:44', b:'draft' },
+    { f:'Northline Title Co.', s:'Insurance certificate request', p:'We need a copy of the master insurance certificate for a closing on Friday …', t:'06:52', b:'draft' },
+    { f:'R. Castillo', s:'Please waive the late fee (again)', p:'Third month in a row that I am asking about the late fee …', t:'07:01', b:'review' },
+    { f:'Greg Baum', s:'Trash pickup over the holiday', p:'Will pickup change for the long weekend? …', t:'07:04', b:'draft' },
+    { f:'Mail delivery system', s:'Undeliverable: building notice', p:'Your message could not be delivered to the following address …', t:'07:06', b:'quiet' },
+    { f:'Nora Fields', s:'Clubhouse reservation Saturday', p:'Is the clubhouse free this Saturday afternoon for a birthday? …', t:'07:12', b:'draft' },
+    { f:'Hollis & Burke LLP', s:'Re: Unit 9D – notice', p:'Please see the attached letter regarding the above unit …', t:'07:16', b:'review' },
+    { f:'Paul Kessler', s:'Change of mailing address', p:'Please update my mailing address. I’m renting out my unit from next month …', t:'07:25', b:'draft' },
+    { f:'Andrea Cole', s:'Is the rooftop open this weekend?', p:'Saw a sign about closing for repairs. Is it still open? …', t:'07:28', b:'draft' }
+  ];
+  D.sort(function (a, b) { return a.t < b.t ? -1 : 1; });
+
+  var $ = function (id) { return document.getElementById(id); };
+  var sortedWrap = $('sortedWrap'), sorted = $('sorted'), list = $('list'), detail = $('detail'), win = $('win'), unread = $('unread'), tally = $('tally'), go = $('go');
+  var label = { draft:'Draft ready', urgent:'Urgent', review:'Needs you', quiet:'Filed quietly' };
+  var rows = [], selected = null, ran = false;
+  var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function el(tag, cls, txt) { var e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; }
+
+  D.forEach(function (m, i) {
+    var r = el('button', 'row' + (m.d ? ' open-able' : ''));
+    r.type = 'button'; r.setAttribute('role', 'listitem');
+    r.appendChild(el('span', 'dot'));
+    var top = el('div', 'top'); top.appendChild(el('span', '', m.f)); top.appendChild(el('span', '', m.t)); r.appendChild(top);
+    r.appendChild(el('div', 'subj', m.s)); r.appendChild(el('div', 'prev', m.p));
+    r.appendChild(el('span', 'badge b-' + m.b, label[m.b]));
+    r.addEventListener('click', function () { open(i); });
+    list.appendChild(r); rows.push(r);
+  });
+
+  function showEmpty(msg) {
+    detail.textContent = '';
+    var e = el('div', 'empty');
+    e.appendChild(el('strong', '', msg[0])); e.appendChild(el('span', '', msg[1]));
+    detail.appendChild(e);
+  }
+  showEmpty(['Your team’s inbox, sorted.', 'Press the button above, then open any email with an arrow. Original on top, what was prepared below.']);
+
+  function open(i) {
+    var m = D[i];
+    rows.forEach(function (r) { r.classList.remove('sel'); });
+    rows[i].classList.add('sel'); rows[i].classList.add('read'); selected = i;
+    updateUnread();
+    if (!ran) { showEmpty(['Press the button first.', 'The walkthrough shows what was prepared before you logged in.']); return; }
+    if (!m.d) { showEmpty(['Not opened in this example.', 'Eight emails are fully worked through. Open one with an arrow (›).']); win.classList.add('show-detail'); addBack(); return; }
+    render(m);
+    win.classList.add('show-detail');
+  }
+
+  function addBack() {
+    var b = el('button', 'back', '‹ Back to inbox'); b.type = 'button';
+    b.addEventListener('click', function () { win.classList.remove('show-detail'); });
+    detail.insertBefore(b, detail.firstChild);
+  }
+
+  function render(m) {
+    detail.textContent = '';
+    var b = el('button', 'back', '‹ Back to inbox'); b.type = 'button';
+    b.addEventListener('click', function () { win.classList.remove('show-detail'); });
+    detail.appendChild(b);
+
+    detail.appendChild(el('p', 'pane-h', 'Original email'));
+    var o = el('div', 'orig');
+    o.appendChild(el('div', 'from', m.f)); o.appendChild(el('div', 'sj', m.s)); o.appendChild(el('p', '', m.d.o));
+    detail.appendChild(o);
+    detail.appendChild(el('div', 'arrow', '↓ prepared before you logged in'));
+
+    detail.appendChild(el('p', 'pane-h', 'What was prepared'));
+    var cls = m.b === 'urgent' ? ' urgent' : m.b === 'review' ? ' review' : m.b === 'quiet' ? ' quiet' : '';
+    var r = el('div', 'res' + cls);
+    var meta = el('div', 'meta');
+    var c1 = el('span'); c1.appendChild(document.createTextNode('Category ')); c1.appendChild(el('b', '', m.d.cat)); meta.appendChild(c1);
+    var c2 = el('span'); c2.appendChild(document.createTextNode('Property ')); c2.appendChild(el('b', '', m.d.prop)); meta.appendChild(c2);
+    r.appendChild(meta);
+    if (m.d.drafts) {
+      m.d.drafts.forEach(function (x) { r.appendChild(el('div', 'draft-l', x.l)); r.appendChild(el('p', 'draft', x.x)); });
+      r.appendChild(el('p', 'human', 'Not sent. Your team reviews, edits and clicks send.'));
+    } else {
+      r.appendChild(el('p', 'note', m.d.flag));
+    }
+    var chips = el('div', 'chips');
+    m.d.chips.forEach(function (c) { chips.appendChild(el('span', '', c)); });
+    r.appendChild(chips);
+    detail.appendChild(r);
+    detail.scrollTop = 0;
+  }
+
+  function counts() {
+    var c = { draft:0, urgent:0, review:0, quiet:0 };
+    D.forEach(function (m) { c[m.b]++; });
+    return c;
+  }
+  var tagged = 0;
+  function updateUnread() {
+    var readCount = rows.filter(function (r) { return r.classList.contains('read'); }).length;
+    unread.textContent = D.length - readCount;
+  }
+
+  function finish() {
+    var c = counts();
+    tally.textContent = '';
+    [['t-ok', c.draft, ' drafts ready to review'], ['t-urg', c.urgent, ' flagged urgent'], ['', c.review, ' need your judgment'], ['', c.quiet, ' filed quietly'], ['t-ok', 0, 'Nothing was sent']].forEach(function (x, i) {
+      var s = el('span', x[0]);
+      if (i < 4) { s.appendChild(el('b', '', String(x[1]))); s.appendChild(document.createTextNode(x[2])); } else { s.appendChild(el('b', '', x[2])); }
+      tally.appendChild(s);
+    });
+    requestAnimationFrame(function () { tally.classList.add('on'); });
+    showEmpty(['Done before 7:30.', 'Open any email with an arrow (›): original on top, what was prepared below.']);
+    list.scrollTop = 0;
+    if (window.matchMedia('(max-width:820px)').matches) tally.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+    go.textContent = 'Watch again ▶'; go.disabled = false;
+  }
+
+  function run() {
+    ran = true; tagged = 0; go.disabled = true;
+    tally.classList.remove('on'); tally.textContent = '';
+    rows.forEach(function (r) { r.classList.remove('tagged', 'read', 'sel'); });
+    win.classList.remove('show-detail');
+    unread.textContent = String(D.length);
+    sortedWrap.hidden = false; sorted.textContent = '0';
+    showEmpty(['Working through the inbox …', 'Sorting, flagging, drafting.']);
+    win.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'center' });
+    if (reduce) { rows.forEach(function (r) { r.classList.add('tagged'); }); tagged = D.length; sorted.textContent = String(tagged); finish(); return; }
+    var i = 0;
+    (function step() {
+      if (i >= rows.length) { setTimeout(finish, 350); return; }
+      rows[i].classList.add('tagged');
+      rows[i].scrollIntoView({ block: 'nearest' });
+      tagged++; sorted.textContent = String(tagged);
+      i++; setTimeout(step, 150);
+    })();
+  }
+  go.addEventListener('click', run);
+})();
+</script>
+</body>
+</html>
