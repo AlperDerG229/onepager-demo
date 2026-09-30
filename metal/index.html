@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Furnace Noise – heavy metal news, reviews and shows (demo draft)</title>
+<meta name="description" content="Homepage draft for a heavy metal site. Sample content only.">
+<link rel="stylesheet" href="../fonts/fonts.css">
+<style>
+  :root {
+    --soot:#0b0a0a; --coal:#151211; --ash:#231e1c; --line:#362f2c;
+    --bone:#e9e2d3; --smoke:#a1978d; --blood:#d0191f; --blood-deep:#7a1014;
+    --display:'Anybody','Arial Narrow',Impact,sans-serif;
+    --body:'Onest',system-ui,sans-serif;
+    --mono:'IBM Plex Mono',ui-monospace,monospace;
+  }
+  * { box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior:auto; } }
+  body { margin:0; background:var(--soot); color:var(--bone); font:400 1rem/1.6 var(--body); -webkit-font-smoothing:antialiased; }
+  body::after { content:""; position:fixed; inset:0; pointer-events:none; z-index:50; opacity:.11; mix-blend-mode:screen;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .9 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"); }
+  a { color:inherit; }
+  :focus-visible { outline:2px solid var(--bone); outline-offset:3px; }
+  .skip { position:absolute; left:-999px; top:0; background:var(--bone); color:var(--soot); padding:8px 14px; z-index:100; }
+  .skip:focus { left:0; }
+  .wrap { width:min(1180px,100% - 32px); margin-inline:auto; }
+
+  .demo { background:var(--blood); color:#fff; font:500 .74rem/1.3 var(--mono); letter-spacing:.04em; text-align:center; padding:7px 16px; }
+
+  header.top { border-bottom:1px solid var(--line); }
+  header.top .wrap { display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; padding:14px 0; }
+  .logo { font:900 1.25rem/1 var(--display); font-stretch:60%; letter-spacing:.04em; text-transform:uppercase; text-decoration:none; }
+  .logo b { color:var(--blood); font-weight:900; }
+  nav ul { display:flex; gap:4px 22px; flex-wrap:wrap; list-style:none; margin:0; padding:0; }
+  nav a { font:500 .78rem/1 var(--mono); letter-spacing:.1em; text-transform:uppercase; text-decoration:none; color:var(--smoke); padding:8px 0; display:inline-block; border-bottom:2px solid transparent; }
+  nav a:hover { color:var(--bone); border-color:var(--blood); }
+
+  .hero { padding:clamp(28px,6vw,64px) 0 clamp(36px,6vw,72px); overflow:hidden; }
+  .mark { margin:0; font:900 clamp(4rem,19.5vw,16.2rem)/.8 var(--display); font-stretch:92%; text-transform:uppercase; letter-spacing:-.01em; filter:url(#rip); }
+  .mark span { display:block; }
+  .mark .hollow { color:transparent; -webkit-text-stroke:clamp(2px,.45vw,6px) var(--blood); }
+  .hero-grid { display:grid; grid-template-columns:1.5fr 1fr; gap:clamp(20px,4vw,56px); margin-top:clamp(28px,5vw,56px); align-items:start; }
+  .tag { display:inline-block; font:500 .72rem/1 var(--mono); letter-spacing:.14em; text-transform:uppercase; color:var(--soot); background:var(--bone); padding:6px 9px; }
+  .lead h2 { margin:14px 0 10px; font:900 clamp(2rem,4.6vw,3.6rem)/.98 var(--display); font-stretch:62%; text-transform:uppercase; }
+  .lead p { margin:0 0 16px; color:var(--smoke); max-width:58ch; font-size:1.05rem; }
+  .more { font:500 .8rem/1 var(--mono); letter-spacing:.1em; text-transform:uppercase; text-decoration:none; border-bottom:2px solid var(--blood); padding-bottom:4px; }
+  .more:hover { color:var(--blood); }
+
+  .stub { border:2px dashed var(--smoke); padding:20px 22px 22px; position:relative; background:var(--coal); }
+  .stub::before, .stub::after { content:""; position:absolute; top:50%; width:18px; height:18px; border-radius:50%; background:var(--soot); border:2px dashed var(--smoke); }
+  .stub::before { left:-11px; transform:translateY(-50%); }
+  .stub::after { right:-11px; transform:translateY(-50%); }
+  .stub .k { font:500 .72rem/1 var(--mono); letter-spacing:.14em; text-transform:uppercase; color:var(--blood); }
+  .stub .d { font:900 clamp(3.2rem,7vw,5.2rem)/.9 var(--display); font-stretch:55%; margin:10px 0 2px; text-transform:uppercase; }
+  .stub .d small { font-size:.36em; letter-spacing:.06em; color:var(--smoke); margin-left:.2em; }
+  .stub p { margin:0; font-size:.98rem; }
+  .stub p.b { color:var(--smoke); font-size:.88rem; margin-top:6px; }
+  .btn { display:inline-block; margin-top:16px; background:var(--bone); color:var(--soot); font:700 .8rem/1 var(--mono); letter-spacing:.1em; text-transform:uppercase; padding:13px 18px; text-decoration:none; border:0; cursor:pointer; border-radius:0; }
+  .btn:hover { background:var(--blood); color:#fff; }
+
+  section.block { padding:clamp(40px,6vw,76px) 0; border-top:1px solid var(--line); }
+  .sh { display:flex; align-items:baseline; justify-content:space-between; gap:16px; flex-wrap:wrap; margin-bottom:26px; }
+  .sh h2 { margin:0; font:900 clamp(2.2rem,5vw,3.6rem)/.9 var(--display); font-stretch:55%; text-transform:uppercase; }
+  .sh span { font:500 .76rem/1 var(--mono); letter-spacing:.12em; text-transform:uppercase; color:var(--smoke); }
+
+  .news { list-style:none; margin:0; padding:0; }
+  .news li { display:grid; grid-template-columns:132px 1fr auto; gap:6px 22px; align-items:baseline; padding:18px 0; border-top:1px solid var(--line); }
+  .news li:last-child { border-bottom:1px solid var(--line); }
+  .news time, .news .cat { font:500 .76rem/1.4 var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--smoke); }
+  .news a { font:800 clamp(1.25rem,2.6vw,1.9rem)/1.1 var(--display); font-stretch:70%; text-transform:uppercase; text-decoration:none; }
+  .news a:hover { color:var(--blood); }
+
+  .reviews { display:grid; grid-template-columns:repeat(3,1fr); gap:18px; }
+  .rev { border:1px solid var(--line); background:var(--coal); padding:22px 22px 24px; display:flex; flex-direction:column; gap:10px; }
+  .rev .score { font:900 4.6rem/.85 var(--display); font-stretch:50%; color:var(--blood); }
+  .rev .score small { font-size:.3em; color:var(--smoke); margin-left:.15em; }
+  .rev h3 { margin:0; font:800 1.45rem/1.05 var(--display); font-stretch:70%; text-transform:uppercase; }
+  .rev .by { font:500 .74rem/1.3 var(--mono); letter-spacing:.1em; text-transform:uppercase; color:var(--smoke); }
+  .rev p { margin:0; color:var(--bone); opacity:.86; font-size:.97rem; }
+
+  .releases { display:grid; grid-template-columns:repeat(4,1fr); gap:18px; }
+  .rel .cover { aspect-ratio:1; position:relative; overflow:hidden; border:1px solid var(--line); }
+  .rel .cover i { position:absolute; inset:0; }
+  .c1 { background:radial-gradient(circle at 50% 62%,#d0191f 0 14%,transparent 15%), repeating-radial-gradient(circle at 50% 62%,#0b0a0a 0 7px,#1c1615 7px 14px); }
+  .c2 { background:linear-gradient(160deg,#e9e2d3 0 38%,#0b0a0a 38% 100%); }
+  .c2 i { background:repeating-linear-gradient(90deg,transparent 0 18px,rgba(208,25,31,.9) 18px 22px); mix-blend-mode:multiply; }
+  .c3 { background:conic-gradient(from 210deg at 50% 100%,#0b0a0a,#7a1014,#0b0a0a 40%,#231e1c 62%,#0b0a0a); }
+  .c4 { background:#d0191f; }
+  .c4 i { background:repeating-linear-gradient(135deg,#0b0a0a 0 26px,transparent 26px 52px); }
+  .rel h3 { margin:12px 0 0; font:800 1.25rem/1.05 var(--display); font-stretch:70%; text-transform:uppercase; }
+  .rel p { margin:2px 0 0; font:500 .74rem/1.4 var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--smoke); }
+
+  .shows { width:100%; border-collapse:collapse; }
+  .shows th { text-align:left; font:500 .72rem/1 var(--mono); letter-spacing:.14em; text-transform:uppercase; color:var(--smoke); padding:0 12px 12px 0; border-bottom:2px solid var(--bone); }
+  .shows td { padding:16px 12px 16px 0; border-bottom:1px solid var(--line); vertical-align:baseline; }
+  .shows .dt { font:900 1.9rem/1 var(--display); font-stretch:55%; white-space:nowrap; }
+  .shows .city { font:800 1.35rem/1.1 var(--display); font-stretch:70%; text-transform:uppercase; }
+  .shows .bands { color:var(--smoke); font-size:.93rem; }
+  .st { font:700 .72rem/1 var(--mono); letter-spacing:.12em; text-transform:uppercase; padding:7px 9px; display:inline-block; white-space:nowrap; }
+  .st.sold { color:var(--smoke); border:1px solid var(--line); text-decoration:line-through; }
+  .st.few { background:var(--blood); color:#fff; }
+  .st.open { border:1px solid var(--bone); }
+
+  .contact { display:grid; grid-template-columns:1fr 1fr; gap:clamp(24px,5vw,72px); }
+  .contact p { color:var(--smoke); max-width:44ch; margin:0 0 10px; }
+  form { display:grid; gap:14px; }
+  label { font:500 .74rem/1 var(--mono); letter-spacing:.12em; text-transform:uppercase; color:var(--smoke); display:grid; gap:8px; }
+  input, textarea { font:400 1rem/1.4 var(--body); color:var(--bone); background:var(--coal); border:1px solid var(--line); border-radius:0; padding:13px 14px; width:100%; }
+  input:focus-visible, textarea:focus-visible { outline:2px solid var(--blood); outline-offset:0; border-color:var(--blood); }
+  textarea { min-height:120px; resize:vertical; }
+  #note { font:500 .8rem/1.4 var(--mono); color:var(--blood); min-height:1.2em; margin:0; }
+
+  footer { border-top:1px solid var(--line); padding:28px 0 40px; color:var(--smoke); font:500 .76rem/1.6 var(--mono); letter-spacing:.06em; }
+  footer .wrap { display:flex; justify-content:space-between; gap:12px 24px; flex-wrap:wrap; }
+
+  @media (max-width:900px) {
+    .hero-grid { grid-template-columns:1fr; }
+    .reviews { grid-template-columns:1fr; }
+    .releases { grid-template-columns:repeat(2,1fr); }
+    .contact { grid-template-columns:1fr; }
+  }
+  @media (max-width:640px) {
+    .news li { grid-template-columns:1fr; }
+    .news .cat { display:none; }
+    .shows thead { display:none; }
+    .shows, .shows tbody, .shows tr, .shows td { display:block; }
+    .shows tr { padding:16px 0; border-bottom:1px solid var(--line); }
+    .shows td { border:0; padding:2px 0; }
+    .shows td.tk { padding-top:8px; }
+  }
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <filter id="rip" x="-5%" y="-10%" width="110%" height="120%">
+    <feTurbulence id="rip-noise" type="fractalNoise" baseFrequency="0.011 0.045" numOctaves="2" seed="7" result="n"/>
+    <feDisplacementMap id="rip-map" in="SourceGraphic" in2="n" scale="16" xChannelSelector="R" yChannelSelector="G"/>
+  </filter>
+</svg>
+
+<div class="demo">Demo draft · Sample content · Your name, text and photos go here</div>
+
+<header class="top">
+  <div class="wrap">
+    <a class="logo" href="#top">Furnace<b>/</b>Noise</a>
+    <nav aria-label="Main">
+      <ul>
+        <li><a href="#news">News</a></li>
+        <li><a href="#reviews">Reviews</a></li>
+        <li><a href="#releases">Releases</a></li>
+        <li><a href="#shows">Shows</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  <section class="hero" id="top">
+    <div class="wrap">
+      <h1 class="mark" id="mark" aria-label="Furnace Noise"><span>Furnace</span><span class="hollow">Noise</span></h1>
+      <div class="hero-grid">
+        <article class="lead">
+          <span class="tag">Cover story</span>
+          <h2>Cathedral of Soot take the slowest riff in Europe on tour</h2>
+          <p>Fourteen dates, one amp wall and a setlist that never goes above 58 BPM. We talked to the band about tuning, earplugs and why they refuse to play faster.</p>
+          <a class="more" href="#news">Read the story</a>
+        </article>
+        <aside class="stub" aria-label="Next show">
+          <div class="k">Next show</div>
+          <div class="d">14<small>OCT</small></div>
+          <p><strong>Cathedral of Soot</strong> + Vault Burial</p>
+          <p class="b">Berlin · Lagerhalle 7 · Doors 19:00</p>
+          <a class="btn" href="#shows">Get tickets</a>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="news">
+    <div class="wrap">
+      <div class="sh"><h2>News</h2><span>Updated daily</span></div>
+      <ul class="news">
+        <li><time datetime="2026-09-30">30 Sep</time><a href="#">Cathedral of Soot announce 14-date European run</a><span class="cat">Tours</span></li>
+        <li><time datetime="2026-09-29">29 Sep</time><a href="#">Vault Burial stream new EP in full, three days early</a><span class="cat">Releases</span></li>
+        <li><time datetime="2026-09-28">28 Sep</time><a href="#">Black Quarry adds four bands to its second stage</a><span class="cat">Festivals</span></li>
+        <li><time datetime="2026-09-26">26 Sep</time><a href="#">Low Altar's bassist on tuning down to A</a><span class="cat">Interviews</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="block" id="reviews">
+    <div class="wrap">
+      <div class="sh"><h2>Reviews</h2><span>Scored out of 10</span></div>
+      <div class="reviews">
+        <article class="rev"><div class="score">9.0<small>/10</small></div><h3>Ash Liturgy</h3><div class="by">Cathedral of Soot · Doom</div><p>Six tracks, forty-one minutes, not one wasted note. The drums sound like a collapsing roof, in the best way.</p></article>
+        <article class="rev"><div class="score">8.5<small>/10</small></div><h3>Hollow Ledger</h3><div class="by">Vault Burial · Death metal</div><p>Fast, clean and mean. The production gives every riff room to hit you in the chest.</p></article>
+        <article class="rev"><div class="score">7.0<small>/10</small></div><h3>Tar Hymns</h3><div class="by">Low Altar · Sludge</div><p>Heavy and patient, but the second half repeats itself. The title track alone is worth the ticket.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="releases">
+    <div class="wrap">
+      <div class="sh"><h2>New releases</h2><span>This month</span></div>
+      <div class="releases">
+        <article class="rel"><div class="cover c1"><i></i></div><h3>Ash Liturgy</h3><p>Cathedral of Soot · LP · 02 Oct</p></article>
+        <article class="rel"><div class="cover c2"><i></i></div><h3>Hollow Ledger</h3><p>Vault Burial · EP · 03 Oct</p></article>
+        <article class="rel"><div class="cover c3"><i></i></div><h3>Tar Hymns</h3><p>Low Altar · LP · 09 Oct</p></article>
+        <article class="rel"><div class="cover c4"><i></i></div><h3>Rust Choir</h3><p>Black Quarry · Split · 16 Oct</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="shows">
+    <div class="wrap">
+      <div class="sh"><h2>Shows</h2><span>Autumn dates</span></div>
+      <table class="shows">
+        <thead><tr><th scope="col">Date</th><th scope="col">City · Venue</th><th scope="col">Lineup</th><th scope="col">Tickets</th></tr></thead>
+        <tbody>
+          <tr><td class="dt">14 OCT</td><td><div class="city">Berlin</div>Lagerhalle 7</td><td class="bands">Cathedral of Soot, Vault Burial</td><td class="tk"><span class="st few">Few left</span></td></tr>
+          <tr><td class="dt">16 OCT</td><td><div class="city">Hamburg</div>Kellerbunker</td><td class="bands">Cathedral of Soot, Low Altar</td><td class="tk"><span class="st sold">Sold out</span></td></tr>
+          <tr><td class="dt">19 OCT</td><td><div class="city">Stuttgart</div>Schlachthof</td><td class="bands">Vault Burial, Black Quarry</td><td class="tk"><span class="st open">On sale</span></td></tr>
+          <tr><td class="dt">22 OCT</td><td><div class="city">Vienna</div>Gasometer Club</td><td class="bands">Cathedral of Soot</td><td class="tk"><span class="st open">On sale</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="block" id="contact">
+    <div class="wrap contact">
+      <div>
+        <div class="sh"><h2>Contact</h2></div>
+        <p>Send a tip, a promo or a show listing. Every message is read by a person.</p>
+        <p>Press and booking: editor@your-domain.example</p>
+      </div>
+      <form id="form" novalidate>
+        <label>Name<input name="name" autocomplete="name"></label>
+        <label>Email<input name="email" type="email" autocomplete="email"></label>
+        <label>Message<textarea name="msg"></textarea></label>
+        <div><button class="btn" type="submit">Send message</button></div>
+        <p id="note" role="status"></p>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap"><span>© Furnace Noise · sample content</span><span>Demo draft · nothing on this page is sent or stored</span></div>
+</footer>
+
+<script>
+(function () {
+  var mark = document.getElementById('mark');
+  var noise = document.getElementById('rip-noise'), map = document.getElementById('rip-map');
+  var calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var base = 6;
+  function fit() {
+    var fs = parseFloat(getComputedStyle(mark).fontSize);
+    base = fs * 0.03;
+    noise.setAttribute('baseFrequency', (0.011 * 272 / fs).toFixed(4) + ' ' + (0.045 * 272 / fs).toFixed(4));
+    map.setAttribute('scale', base.toFixed(2));
+  }
+  function burst(ms) {
+    if (calm) return;
+    var t0 = performance.now(), seeds = [3, 11, 19, 27, 7];
+    (function step(now) {
+      var p = (now - t0) / ms;
+      if (p >= 1) { noise.setAttribute('seed', 7); map.setAttribute('scale', base.toFixed(2)); return; }
+      noise.setAttribute('seed', seeds[Math.floor(p * seeds.length)]);
+      map.setAttribute('scale', (base * (1 + 1.6 * (1 - p))).toFixed(2));
+      setTimeout(function () { requestAnimationFrame(step); }, 70);
+    })(t0);
+  }
+  fit();
+  window.addEventListener('resize', fit);
+  burst(700);
+  mark.addEventListener('mouseenter', function () { burst(450); });
+  document.getElementById('form').addEventListener('submit', function (e) {
+    e.preventDefault();
+    document.getElementById('note').textContent = 'Demo only: nothing was sent.';
+  });
+})();
+</script>
+</body>
+</html>
